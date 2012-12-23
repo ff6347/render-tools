@@ -19,3 +19,45 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.  
 
 // see also http://www.opensource.org/licenses/mit-license.php
+
+
+{
+
+run_script_set_output_path(this);
+	 function run_script_set_output_path(thisObj){
+
+// this is global
+SOP_meta = new Object();
+SOP_meta = {
+  setting1 : false,
+  setting2 : false 
+};
+
+///   THIS WILL CHECK IF PANEL IS DOCKABLE OR FLAOTING WINDOW  
+var win   = buildUI(thisObj);
+if ((win != null) && (win instanceof Window)) {
+    win.center();
+    win.show();
+}; // end if win  null and not a instance of window 
+
+ function buildUI(thisObj) {
+    var win = (thisObj instanceof Panel) ? thisObj :  new Window('palette', 'Set Output Path',[0,0,150,260],{resizeable: true}); 
+
+    if (win != null) {
+
+        var H = 25; // the height
+        var W1 = 30; // the width
+        var G = 5; // the gutter
+        var x = G; 
+        var y = G;
+        win.setpath_button = win.add('button', [x ,y,x+W1*5,y + H], 'Set Output Path');
+
+        // var yuioff = G; // and some offset
+        // 
+    }
+    return win
+};// close buildUI
+
+
+};// end of run_script_set_output_path
+}
