@@ -1,21 +1,1 @@
-// Copyright (c)  2012 
-// Fabian "fabiantheblind" Morón Zirfas  
-// Permission is hereby granted, free of charge, to any 
-// person obtaining a copy of this software and associated
-// documentation files (the "Software"), to deal in the Software
-// without restriction, including without limitation the rights 
-// to use, copy, modify, merge, publish, distribute, sublicense,
-// and/or sell copies of the Software, and to  permit persons to 
-// whom the Software is furnished to do so, subject to 
-// the following conditions:  
-// The above copyright notice and this permission notice
-// shall be included in all copies or substantial portions of the Software.  
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-// EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
-// OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
-// IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
-// DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF  CONTRACT,
-// TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTIO
-// WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.  
-
-// see also http://www.opensource.org/licenses/mit-license.php
+﻿// Copyright (c)  2012 // Fabian "fabiantheblind" Morón Zirfas  // Permission is hereby granted, free of charge, to any // person obtaining a copy of this software and associated// documentation files (the "Software"), to deal in the Software// without restriction, including without limitation the rights // to use, copy, modify, merge, publish, distribute, sublicense,// and/or sell copies of the Software, and to  permit persons to // whom the Software is furnished to do so, subject to // the following conditions:  // The above copyright notice and this permission notice// shall be included in all copies or substantial portions of the Software.  // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,// EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES// OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.// IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,// DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF  CONTRACT,// TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTIO// WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.  // see also http://www.opensource.org/licenses/mit-license.php{run_script_set_output_modules(this); function run_script_set_output_modules(thisObj){// this is globalvar SOM_meta = new Object();SOM_meta.outputTemplates = null;SOM_meta.settings = {  setting1 : false,  setting2 : false };///   THIS WILL CHECK IF PANEL IS DOCKABLE OR FLAOTING WINDOW  var win   = buildUI(thisObj);if ((win != null) && (win instanceof Window)) {    win.center();    win.show();}; // end if win  null and not a instance of window  function buildUI(thisObj) {    var win = (thisObj instanceof Panel) ? thisObj :  new Window('palette', 'example',[0,0,150,260],{resizeable: true});     if (win != null) {        var H = 25; // the height        var W1 = 30; // the width        var G = 5; // the gutter        var x = G;         var y = G;        win.read_templates_button = win.add('button', [x ,y,x+W1*5,y + H], 'Read');        win.read_templates_button.onClick = function (){        get_templates();        alert(SOM_meta.outputTemplates.join("\n"));        // var yuioff = G; // and some offset        };// close read_templates_button    }    return win};// close buildUIfunction ftb_copy_array(arr){      var res = new Array();      for(var i = 0; i < arr.length;i++){        res.push(arr[i]);      };  return res;  };function get_templates(){var testComp = app.project.items.addComp("testComp", 100, 100, 1, 1, 25);var testRQItem = app.project.renderQueue.items.add(testComp);var testOM = testRQItem.outputModule(1);SOM_meta.outputTemplates = ftb_copy_array(testOM.templates);// alert(testOM.templates);testRQItem.remove();testComp.remove();    // for(var i = 0; i < ){    // }}; // end get temoplatea }; // close run_script_set_output_modules}

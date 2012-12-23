@@ -23,12 +23,20 @@
 
 {
 
+#include "Debugger.jsx";
+var deeBug = new Debugger(true,"setOutputPath.jsx version 0.1","This is a debug version");
+ deeBug.init();
 run_script_set_output_path(this);
-	 function run_script_set_output_path(thisObj){
-
+     function run_script_set_output_path(thisObj){
+if(check_security_settings() == false){
+ alert ("This script requires the scripting security preference to be set.\n" +
+            "Go to the \"General\" panel of your application preferences,\n" +
+            "and make sure that \"Allow Scripts to Write Files and Access Network\" is checked.");
+return;
+};
 // this is global
-SOP_meta = new Object();
-SOP_meta = {
+var SOP_meta = new Object();
+    SOP_meta = {
   setting1 : false,
   setting2 : false 
 };
@@ -51,13 +59,75 @@ if ((win != null) && (win instanceof Window)) {
         var x = G; 
         var y = G;
         win.setpath_button = win.add('button', [x ,y,x+W1*5,y + H], 'Set Output Path');
+        win.setpath_button.onClick = function (){
+        ChangeRenderLocations();
 
+
+        };// end of setpath_button on click
         // var yuioff = G; // and some offset
         // 
     }
     return win
 };// close buildUI
+  function ChangeRenderLocations(){
+    var scriptName = "Change Render Locations 2 new Folders";
+
+    var newLocation = Folder.selectDialog("Select a render output folder...");
+    
+    if (newLocation != null) {
+
+      app.beginUndoGroup(scriptName);
+      
+      // Process all render queue items whose status is set to Queued.
+      for (var i = 1; i <= app.project.renderQueue.numItems; ++i) {
+        var curItem = app.project.renderQueue.item(i);
+        
+        if (curItem.status == RQItemStatus.QUEUED) {
+          // Change all output modules for the current render queue item.
+          for (j = 1; j <= curItem.numOutputModules; ++j) {
+            var curOM = curItem.outputModule(j);
+            // this is the addition by fabiantheblind
+            if(curItem.numOutputModules > 1){
+              var targetFolder = new Folder(newLocation.fsName +"/"+curItem.comp.name + "_"+j); 
+            }else{
+              
+              var targetFolder = new Folder(newLocation.fsName +"/"+curItem.comp.name); 
+              
+            }
+              if(!targetFolder.exists){ 
+            targetFolder.create(); 
+              }
+            var tF = targetFolder.fsName;
+            // now there is a folder for each output module
+            // from here on 
+            var oldLocation = curOM.file;
+            curOM.file = new File( tF + "/" + oldLocation.name);
+            deeBug.addLineToInfo("RQ Item: " +i+ " OModule: " + j)
+            deeBug.addLineToInfo("---- Old location: " + oldLocation.fsName);
+            deeBug.addLineToInfo("---- New Location: " + curOM.file.fsName); 
+
+            // alert("New output path:\n"+curOM.file.fsName, scriptName);
+          }
+        }
+      }
+      // alert("done");
+      deeBug.write_infos();
+      app.endUndoGroup();
+    }
+  }
 
 
-};// end of run_script_set_output_path
+function check_security_settings(){
+    var safeToRunScript = false;
+    // Check if we are allowed to access the network.
+    var securitySetting = app.preferences.getPrefAsLong("Main Pref Section", "Pref_SCRIPTING_FILE_NETWORK_SECURITY");
+    if (securitySetting != 1) {
+        safeToRunScript = false;
+    }else{
+        safeToRunScript = true;
+    };
+
+    return safeToRunScript;
+    };// end check_security_settings
+};// end of run_script_set_output_path enclose all
 }
