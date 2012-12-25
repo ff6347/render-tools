@@ -40,6 +40,8 @@ var SOP_meta = new Object();
   setting1 : false,
   setting2 : false 
 };
+SOP_meta.ddlStrings = ["projectName","compName","fileExtension","#####","renderSettingsName","outputModuleName","frameRate","startFrame","endFrame","durationFrames","startTimecode","endTimecode","durationTimecode","channels","projectColorDepth","outputColorDepth","compressor","fieldOrder","pulldownPhase","width","height"];
+SOP_meta.outname = "[compName].[fileExtension]";
 
 ///   THIS WILL CHECK IF PANEL IS DOCKABLE OR FLAOTING WINDOW  
 var win   = buildUI(thisObj);
@@ -54,22 +56,25 @@ if ((win != null) && (win instanceof Window)) {
     if (win != null) {
 
         var H = 25; // the height
-        var W1 = 30; // the width
+        var W1 = 50; // the width
         var G = 5; // the gutter
         var x = G; 
         var y = G;
         win.setpath_button = win.add('button', [x ,y,x+W1*5,y + H], 'Set Output Path');
+        y+=H+G;
+        win.add_to_name_dropdl = win.add('dropdownlist',[x ,y,x+W1*5,y + H],SOP_meta.ddlStrings);
+        y+=H+G;
+        win.outname_etxt = win.add('edittext',[x ,y,x+W1*5,y + H*4],SOP_meta.outname,{multiline:true});
         win.setpath_button.onClick = function (){
-        ChangeRenderLocations();
+        changeRenderLocations();
 
 
         };// end of setpath_button on click
-        // var yuioff = G; // and some offset
         // 
     }
     return win
 };// close buildUI
-  function ChangeRenderLocations(){
+  function changeRenderLocations(){
     var scriptName = "Change Render Locations 2 new Folders";
 
     var newLocation = Folder.selectDialog("Select a render output folder...");
