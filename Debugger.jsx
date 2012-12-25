@@ -2,7 +2,7 @@
  * see also https://gist.github.com/4278820
  * 
  * This is a debugger class for creating files with infos about stuff
- * @param {Boolean} dbg if true the debugger will be initalized
+ * @param {Boolean} dbg if true the debugger will be writeHeadalized
  * @param {String} title the title in the debuginfo file
  * @param {Stirng} message An alert message can be set via DEebugger.message = "something"
  *
@@ -32,8 +32,7 @@ this.filename = fn;
 this.filepath = "~/Desktop/"+ this.filename +".txt";
 this.debugstrings = [title];
 this.messageString = message;
-
-this.init = function (){
+this.write_head = function (){
   this.debugstrings.push(this.messageString);
   this.debugstrings.push(this.filename);
 };

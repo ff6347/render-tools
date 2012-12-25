@@ -25,7 +25,7 @@
 
 #include "Debugger.jsx";
 var deeBug = new Debugger(true,"setOutputPath.jsx version 0.1","This is a debug version");
- deeBug.init();
+ deeBug.write_head();
 run_script_set_output_path(this);
      function run_script_set_output_path(thisObj){
 if(check_security_settings() == false){
