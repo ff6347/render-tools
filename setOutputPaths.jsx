@@ -36,12 +36,10 @@ return;
 };
 // this is global
 var SOP_meta = new Object();
-    SOP_meta = {
-  setting1 : false,
-  setting2 : false 
-};
-SOP_meta.ddlStrings = ["projectName","compName","fileExtension","#####","renderSettingsName","outputModuleName","frameRate","startFrame","endFrame","durationFrames","startTimecode","endTimecode","durationTimecode","channels","projectColorDepth","outputColorDepth","compressor","fieldOrder","pulldownPhase","width","height"];
-SOP_meta.outname = "[compName].[fileExtension]";
+    SOP_meta.undoName = "Change Render Locations";
+
+SOP_meta.ddlStrings = ["[projectName]","[compName]","[fileExtension]","[#####]","[renderSettingsName]","[outputModuleName]","[frameRate]","[startFrame]","[endFrame]","[durationFrames]","[startTimecode]","[endTimecode]","[durationTimecode]","[channels]","[projectColorDepth]","[outputColorDepth]","[compressor]","[fieldOrder]","[pulldownPhase]","[width]","[height]"];
+SOP_meta.outname = "[compName]_[#####].[fileExtension]";
 
 ///   THIS WILL CHECK IF PANEL IS DOCKABLE OR FLAOTING WINDOW  
 var win   = buildUI(thisObj);
@@ -65,23 +63,28 @@ if ((win != null) && (win instanceof Window)) {
         win.add_to_name_dropdl = win.add('dropdownlist',[x ,y,x+W1*5,y + H],SOP_meta.ddlStrings);
         y+=H+G;
         win.outname_etxt = win.add('edittext',[x ,y,x+W1*5,y + H*4],SOP_meta.outname,{multiline:true});
+
+        win.add_to_name_dropdl.onChange = function (){
+          win.outname_etxt.textselection = this.selection.text;
+          SOP_meta.outname = win.outname_etxt.text;
+        };
+        win.outname_etxt.onChange = function  (){
+          SOP_meta.outname = this.text;
+        };
         win.setpath_button.onClick = function (){
         changeRenderLocations();
-
-
         };// end of setpath_button on click
         // 
     }
     return win
 };// close buildUI
   function changeRenderLocations(){
-    var scriptName = "Change Render Locations 2 new Folders";
 
     var newLocation = Folder.selectDialog("Select a render output folder...");
     
     if (newLocation != null) {
 
-      app.beginUndoGroup(scriptName);
+      app.beginUndoGroup(SOP_meta.undoName);
       
       // Process all render queue items whose status is set to Queued.
       for (var i = 1; i <= app.project.renderQueue.numItems; ++i) {
@@ -106,12 +109,12 @@ if ((win != null) && (win instanceof Window)) {
             // now there is a folder for each output module
             // from here on 
             var oldLocation = curOM.file;
-            curOM.file = new File( tF + "/" + oldLocation.name);
+            curOM.file = new File( tF + "/" + SOP_meta.outname);
             deeBug.addLineToInfo("RQ Item: " +i+ " OModule: " + j)
             deeBug.addLineToInfo("---- Old location: " + oldLocation.fsName);
             deeBug.addLineToInfo("---- New Location: " + curOM.file.fsName); 
 
-            // alert("New output path:\n"+curOM.file.fsName, scriptName);
+            // alert("New output path:\n"+curOM.file.fsName, SOP_meta.undoname);
           }
         }
       }
